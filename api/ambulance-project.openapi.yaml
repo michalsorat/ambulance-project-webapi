@@ -1,0 +1,208 @@
+openapi: 3.0.0
+servers:
+  - description: Cluster Endpoint
+    url: /api
+info:
+  description: Meal Orders management for Web-In-Cloud system
+  version: "1.0.0"
+  title: Meal Orders API
+  contact:
+    email: <your_email>
+  license:
+    name: CC BY 4.0
+    url: "https://creativecommons.org/licenses/by/4.0/"
+tags:
+  - name: mealOrders
+    description: Meal Orders API
+
+paths:
+  "/meal-orders":
+    get:
+      tags:
+        - mealOrders
+      summary: Provides the list of meal orders
+      operationId: getMealOrders
+      description: Get a list of all meal orders
+      responses:
+        "200":
+          description: List of meal orders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MealOrder"
+              examples:
+                response:
+                  $ref: "#/components/examples/MealOrdersExample"
+        "404":
+          description: No meal orders found
+
+    post:
+      tags:
+        - mealOrders
+      summary: Creates a new meal order
+      operationId: createMealOrder
+      description: Use this method to create a new meal order
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MealOrder"
+            examples:
+              request:
+                $ref: "#/components/examples/MealOrderExample"
+        description: Meal order to create
+        required: true
+      responses:
+        "201":
+          description: Meal order created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MealOrder"
+              examples:
+                response:
+                  $ref: "#/components/examples/MealOrderExample"
+        "400":
+          description: Invalid input
+
+  "/meal-orders/{orderId}":
+    get:
+      tags:
+        - mealOrders
+      summary: Provides details about a specific meal order
+      operationId: getMealOrder
+      description: Get details of a specific meal order by its ID
+      parameters:
+        - in: path
+          name: orderId
+          description: ID of the meal order
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Meal order details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MealOrder"
+              examples:
+                response:
+                  $ref: "#/components/examples/MealOrderExample"
+        "404":
+          description: Meal order with such ID does not exist
+
+    put:
+      tags:
+        - mealOrders
+      summary: Updates a specific meal order
+      operationId: updateMealOrder
+      description: Use this method to update the content of a specific meal order
+      parameters:
+        - in: path
+          name: orderId
+          description: ID of the meal order
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MealOrder"
+            examples:
+              request:
+                $ref: "#/components/examples/MealOrderExample"
+        description: Meal order to update
+        required: true
+      responses:
+        "200":
+          description: Meal order updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MealOrder"
+              examples:
+                response:
+                  $ref: "#/components/examples/MealOrderExample"
+        "400":
+          description: Invalid input
+        "404":
+          description: Meal order with such ID does not exist
+
+    delete:
+      tags:
+        - mealOrders
+      summary: Deletes a specific meal order
+      operationId: deleteMealOrder
+      description: Use this method to delete a specific meal order
+      parameters:
+        - in: path
+          name: orderId
+          description: ID of the meal order
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Meal order deleted successfully
+        "404":
+          description: Meal order with such ID does not exist
+
+components:
+  schemas:
+    MealOrder:
+      type: object
+      required: [id, name, dietaryReq, medicalNeed, consumationTime]
+      properties:
+        id:
+          type: string
+          example: "@new"
+          description: Unique ID of the meal order
+        name:
+          type: string
+          example: John Doe
+          description: Name of the person ordering the meal
+        dietaryReq:
+          type: string
+          example: Vegetarian
+          description: Dietary requirements of the person
+        medicalNeed:
+          type: string
+          example: Diabetes
+          description: Medical needs related to the meal order
+        consumationTime:
+          type: string
+          format: date-time
+          example: "2024-05-26T12:00:00Z"
+          description: Time when the meal is to be consumed
+      example:
+        $ref: "#/components/examples/MealOrderExample"
+
+  examples:
+    MealOrderExample:
+      summary: Example meal order
+      description: Example of a meal order with all necessary details
+      value:
+        id: "1"
+        name: John Doe
+        dietaryReq: Vegetarian
+        medicalNeed: Diabetes
+        consumationTime: "2024-05-26T12:00:00Z"
+
+    MealOrdersExample:
+      summary: List of meal orders
+      description: Example list containing multiple meal orders
+      value:
+        - id: "1"
+          name: John Doe
+          dietaryReq: Vegetarian
+          medicalNeed: Diabetes
+          consumationTime: "2024-05-26T12:00:00Z"
+        - id: "2"
+          name: Jane Smith
+          dietaryReq: Gluten-Free
+          medicalNeed: High-temperature
+          consumationTime: "2024-05-26T12:30:00Z"
