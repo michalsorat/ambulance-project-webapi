@@ -1,0 +1,3 @@
+internal/ambulance_project/api_*
+internal/ambulance_project/model_*
+internal/ambulance_project/routers.go
