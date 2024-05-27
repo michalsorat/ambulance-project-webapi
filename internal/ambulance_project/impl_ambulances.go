@@ -8,6 +8,16 @@ import (
  "github.com/michalsorat/ambulance-project-webapi/internal/db_service"
 )
 
+// // GetAllAmbulances - Retrieves all ambulances
+func (this *implAmbulancesAPI) GetAllAmbulances(ctx *gin.Context) {
+ 	ctx.AbortWithStatus(http.StatusNotImplemented)
+}
+
+// GetAmbulance - Get specific ambulance
+func (this *implAmbulancesAPI) GetAmbulance(ctx *gin.Context) {
+ 	ctx.AbortWithStatus(http.StatusNotImplemented)
+}
+
 // CreateAmbulance - Saves new ambulance definition
 func (this *implAmbulancesAPI) CreateAmbulance(ctx *gin.Context) {
 	value, exists := ctx.Get("db_service")

@@ -2,8 +2,10 @@ package ambulance_project
 
 import (
   "net/http"
-
+  "log"
   "github.com/gin-gonic/gin"
+  "github.com/google/uuid"
+  "slices"
 )
 
 // CreateMealOrder - Creates a new meal order
@@ -18,6 +20,8 @@ func (this *implMealOrdersAPI) CreateMealOrder(ctx *gin.Context) {
                 "error":   err.Error(),
             }, http.StatusBadRequest
         }
+
+        log.Printf("Received order: %+v", order)
 
         if order.Name == "" {
             return nil, gin.H{
@@ -90,49 +94,41 @@ func (this *implMealOrdersAPI) DeleteMealOrder(ctx *gin.Context) {
 
 // GetMealOrder - Provides details about a specific meal order
 func (this *implMealOrdersAPI) GetMealOrder(ctx *gin.Context) {
-    ambulanceId := ctx.Param("ambulanceId")
-    orderId := ctx.Param("orderId")
+    updateAmbulanceFunc(ctx, func(c *gin.Context, ambulance *Ambulance) (*Ambulance, interface{}, int) {
+        orderId := ctx.Param("orderId")
 
-    ambulance, err := getAmbulanceById(ambulanceId)
-    if err != nil {
-        ctx.JSON(http.StatusNotFound, gin.H{
-            "status":  "Not Found",
-            "message": "Ambulance not found",
-            "error":   err.Error(),
+        if orderId == "" {
+            return nil, gin.H{
+                "status":  http.StatusBadRequest,
+                "message": "Order ID is required",
+            }, http.StatusBadRequest
+        }
+
+        orderIndex := slices.IndexFunc(ambulance.MealOrders, func(order MealOrder) bool {
+            return orderId == order.Id
         })
-        return
-    }
 
-    orderIndex := slices.IndexFunc(ambulance.MealOrders, func(order MealOrder) bool {
-        return orderId == order.Id
+        if orderIndex < 0 {
+            return nil, gin.H{
+                "status":  http.StatusNotFound,
+                "message": "Order not found",
+            }, http.StatusNotFound
+        }
+
+        return nil, ambulance.MealOrders[orderIndex], http.StatusOK
     })
-
-    if orderIndex < 0 {
-        ctx.JSON(http.StatusNotFound, gin.H{
-            "status":  "Not Found",
-            "message": "Order not found",
-        })
-        return
-    }
-
-    ctx.JSON(http.StatusOK, ambulance.MealOrders[orderIndex])
 }
 
 // GetMealOrders - Provides the list of meal orders
 func (this *implMealOrdersAPI) GetMealOrders(ctx *gin.Context) {
-    ambulanceId := ctx.Param("ambulanceId")
-
-    ambulance, err := getAmbulanceById(ambulanceId)
-    if err != nil {
-        ctx.JSON(http.StatusNotFound, gin.H{
-            "status":  "Not Found",
-            "message": "Ambulance not found",
-            "error":   err.Error(),
-        })
-        return
-    }
-
-    ctx.JSON(http.StatusOK, ambulance.MealOrders)
+    updateAmbulanceFunc(ctx, func(c *gin.Context, ambulance *Ambulance) (*Ambulance, interface{}, int) {
+        result := ambulance.MealOrders
+        if result == nil {
+            result = []MealOrder{}
+        }
+        // return nil ambulance - no need to update it in db
+        return nil, result, http.StatusOK
+    })
 }
 
 // UpdateMealOrder - Updates a specific meal order

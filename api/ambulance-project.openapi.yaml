@@ -50,6 +50,26 @@ paths:
           description: Missing mandatory properties of input object.
         "409":
           description: Entry with the specified id already exists
+    get:
+      tags:
+        - ambulances
+      summary: Retrieves all ambulances
+      operationId: getAllAmbulances
+      description: Use this method to get a list of all ambulances in the system.
+      responses:
+        "200":
+          description: List of all ambulances
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Ambulance"
+              examples:
+                response:
+                  $ref: "#/components/examples/AmbulanceExample"
+        "404":
+          description: No ambulances found
   "/ambulance/{ambulanceId}":
     delete:
       tags:
@@ -67,6 +87,24 @@ paths:
       responses:
         "204":
           description: Item deleted
+        "404":
+          description: Ambulance with such ID does not exist
+    get:
+      tags:
+        - ambulances
+      summary: Get specific ambulance
+      operationId: getAmbulance
+      description: Use this method to get the specific ambulance from the system.
+      parameters:
+        - in: path
+          name: ambulanceId
+          description: pass the id of the particular ambulance
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Item retrieved
         "404":
           description: Ambulance with such ID does not exist
   "/meal-orders/{ambulanceId}/records":
