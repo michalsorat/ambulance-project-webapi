@@ -48,11 +48,11 @@ func newMealOrdersAPI() MealOrdersAPI {
 }
 
 func (this *implMealOrdersAPI) addRoutes(routerGroup *gin.RouterGroup) {
-  routerGroup.Handle( http.MethodPost, "/meal-orders", this.CreateMealOrder)
-  routerGroup.Handle( http.MethodDelete, "/meal-orders/:orderId", this.DeleteMealOrder)
-  routerGroup.Handle( http.MethodGet, "/meal-orders/:orderId", this.GetMealOrder)
-  routerGroup.Handle( http.MethodGet, "/meal-orders", this.GetMealOrders)
-  routerGroup.Handle( http.MethodPut, "/meal-orders/:orderId", this.UpdateMealOrder)
+  routerGroup.Handle( http.MethodPost, "/meal-orders/:ambulanceId/records", this.CreateMealOrder)
+  routerGroup.Handle( http.MethodDelete, "/meal-orders/:ambulanceId/records/:orderId", this.DeleteMealOrder)
+  routerGroup.Handle( http.MethodGet, "/meal-orders/:ambulanceId/records/:orderId", this.GetMealOrder)
+  routerGroup.Handle( http.MethodGet, "/meal-orders/:ambulanceId/records", this.GetMealOrders)
+  routerGroup.Handle( http.MethodPut, "/meal-orders/:ambulanceId/records/:orderId", this.UpdateMealOrder)
 }
 
 // Copy following section to separate file, uncomment, and implement accordingly

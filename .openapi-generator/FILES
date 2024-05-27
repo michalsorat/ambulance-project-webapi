@@ -1,4 +1,6 @@
 internal/ambulance_project/README.md
+internal/ambulance_project/api_ambulances.go
 internal/ambulance_project/api_meal_orders.go
+internal/ambulance_project/model_ambulance.go
 internal/ambulance_project/model_meal_order.go
 internal/ambulance_project/routers.go

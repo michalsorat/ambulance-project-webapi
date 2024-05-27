@@ -18,15 +18,16 @@ function mongo {
 }
 
 switch ($command) {
+    "openapi" {
+        docker run --rm -ti -v ${ProjectRoot}:/local openapitools/openapi-generator-cli generate -c /local/scripts/generator-cfg.yaml
+    }
     "start" {
         try {
             mongo up --detach
             go run ${ProjectRoot}/cmd/ambulance-api-service
-            mongo down
+        } finally {
+            # mongo down
         }
-    }
-    "openapi" {
-        docker run --rm -ti -v ${ProjectRoot}:/local openapitools/openapi-generator-cli generate -c /local/scripts/generator-cfg.yaml
     }
     "mongo" {
         mongo up
